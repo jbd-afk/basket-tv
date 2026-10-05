@@ -1,0 +1,72 @@
+[
+  {
+    "league": "EuroLeague",
+    "home": "Estrella Roja",
+    "away": "Efes",
+    "start": "2026-10-01T18:00:00.000Z",
+    "channel": "M+ Baloncesto 2",
+    "country": "Espagne",
+    "countryCode": "es",
+    "live": true,
+    "replay": false,
+    "source": "https://www.movistarplus.es/programacion-tv/mbalc2",
+    "sourceName": "Movistar Plus+ · grille officielle",
+    "checkedAt": "2026-10-01T10:36:13.209Z"
+  },
+  {
+    "league": "EuroLeague",
+    "home": "Virtus",
+    "away": "Olympiacos",
+    "start": "2026-10-01T18:30:00.000Z",
+    "channel": "M+ Baloncesto 3",
+    "country": "Espagne",
+    "countryCode": "es",
+    "live": true,
+    "replay": false,
+    "source": "https://www.movistarplus.es/programacion-tv/mbalc3",
+    "sourceName": "Movistar Plus+ · grille officielle",
+    "checkedAt": "2026-10-01T10:36:13.209Z"
+  },
+  {
+    "league": "EuroLeague",
+    "home": "París",
+    "away": "Zalgiris",
+    "start": "2026-10-01T18:45:00.000Z",
+    "channel": "M+ Baloncesto 4",
+    "country": "Espagne",
+    "countryCode": "es",
+    "live": true,
+    "replay": false,
+    "source": "https://www.movistarplus.es/programacion-tv/mbalc4",
+    "sourceName": "Movistar Plus+ · grille officielle",
+    "checkedAt": "2026-10-01T10:36:13.209Z"
+  },
+  {
+    "league": "EuroLeague",
+    "home": "Hapoel  Tel Aviv",
+    "away": "Real Madrid",
+    "start": "2026-10-01T16:00:00.000Z",
+    "channel": "M+ Baloncesto",
+    "country": "Espagne",
+    "countryCode": "es",
+    "live": true,
+    "replay": false,
+    "source": "https://www.movistarplus.es/programacion-tv/mbalct",
+    "sourceName": "Movistar Plus+ · grille officielle",
+    "checkedAt": "2026-10-01T10:36:13.209Z"
+  },
+  {
+    "league": "EuroLeague",
+    "home": "Hapoel  Tel Aviv",
+    "away": "Real Madrid",
+    "start": "2026-10-01T16:00:00.000Z",
+    "channel": "M+ Vamos",
+    "country": "Espagne",
+    "countryCode": "es",
+    "live": true,
+    "replay": false,
+    "source": "https://www.movistarplus.es/programacion-tv/vamosd",
+    "sourceName": "Movistar Plus+ · grille officielle",
+    "checkedAt": "2026-10-01T10:36:13.209Z"
+  }
+]
