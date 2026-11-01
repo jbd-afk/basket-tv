@@ -30,9 +30,16 @@ export async function GET(req:NextRequest){
  const [base,tv,europe,wnba,lnb,elite2]=await Promise.all([Promise.all(jobs),getTV(date),getEuropeanTV(date),officialCalendar("WNBA",date),officialCalendar("Betclic Élite",date),officialCalendar("Élite 2",date)]);
  const results:any[]=[lnb,elite2,...base.filter(r=>r.league==="EuroLeague"),...base.filter(r=>r.league==="NBA"),wnba];
  for(const group of results)for(const m of group.matches)m.broadcasts=broadcastsFor(m,tv.broadcasts);
+ // Fusion tolérante : rattacher une diffusion non reconnue au match officiel correspondant
+ // au lieu de créer une entrée dupliquée "Programme TV" (doublons du type 1er novembre).
+ const shareTeam=(m:any,b:any)=>{const ks=[teamKey(m.home),teamKey(m.away)].filter(k=>k&&k!=="equipe a determiner");return ks.some(k=>k===teamKey(b.home)||k===teamKey(b.away));};
  for(const b of tv.broadcasts.filter((x:any)=>x.live&&parisDate(x.start)===date)){
   const group=results.find(r=>r.league===b.league);if(!group)continue;
   if(group.matches.some((m:any)=>broadcastsFor(m,[b]).length))continue;
+  const near=group.matches.filter((m:any)=>!m.tvOnly&&parisDate(m.date)===parisDate(b.start)&&Math.abs(Date.parse(m.date)-Date.parse(b.start))<=4*3600000);
+  const fallback=near.filter((m:any)=>!(m.broadcasts||[]).length);
+  const target=near.find((m:any)=>shareTeam(m,b))||(fallback.length===1?fallback[0]:undefined);
+  if(target){if(!(target.broadcasts=target.broadcasts||[]).some((x:any)=>x.channel===b.channel&&x.start===b.start))target.broadcasts.push(b);continue;}
   const match:any={id:`tv-${b.league}-${teamKey(b.home)}-${teamKey(b.away)}-${b.start}`,league:b.league,date:b.start,home:b.home,away:b.away,round:b.round||"Programme TV",source:b.source,status:"À venir",timeConfirmed:true,tvOnly:true,broadcasts:[]};
   match.broadcasts=broadcastsFor(match,tv.broadcasts);group.matches.push(match);
  }
