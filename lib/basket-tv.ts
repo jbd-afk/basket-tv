@@ -10,7 +10,8 @@ const aliases=[
  ["panathinaikos","panathinaikos aktor athens","panathinaikos athens"],["maccabi tel aviv","maccabi playtika tel aviv","maccabi rapyd tel aviv"],
  ["olympiakos","olympiacos","olympiacos piraeus"],["virtus bologna","virtus segafredo bologna","virtus"],["crvena zvezda","crvena zvezda meridianbet belgrade","etoile rouge belgrade","estrella roja"],
  ["toronto","toronto raptors"],["miami","miami heat"],["denver","denver nuggets"],["utah","utah jazz"],["indiana","indiana fever"],["las vegas","las vegas aces"],
- ["bourg en bresse","jl bourg","bourg"],["chalon sur saone","chalon"],["gravelines dunkerque","gravelines"],["le mans","le mans sarthe basket"]
+ ["bourg en bresse","jl bourg","bourg"],["chalon sur saone","chalon","chalon saone","elan chalon","chalon basket"],["gravelines dunkerque","gravelines"],["le mans","le mans sarthe basket"],
+ ["monaco","as monaco","as monaco basket"],["strasbourg","sig strasbourg","strasbourg basketball"],["nancy","sluc nancy"],["cholet","cholet basket"],["nanterre","nanterre 92"],["antibes","antibes sharks"],["fos sur mer","fos provence basket","fos provence"],["le portel","essm le portel"],["roanne","elan roannais","bcm roanne"],["vichy","vichy clermont","jeanne darc vichy"]
 ];
 export function teamKey(s:string){const n=norm(s);return aliases.find(a=>a.includes(n))?.[0]||n;}
 export function leagueOf(s:string){const n=norm(s);if(n.includes("wnba"))return "WNBA";if(/\bnba\b/.test(n))return "NBA";if(n.includes("euroligue")||n.includes("euroleague"))return "EuroLeague";if(/\belite\s*2\b|\bpro\s*b\b/.test(n))return "Élite 2";if(n.includes("betclic")||n.includes("pro a"))return "Betclic Élite";return "";}
