@@ -43,6 +43,11 @@ export async function GET(req:NextRequest){
   const match:any={id:`tv-${b.league}-${teamKey(b.home)}-${teamKey(b.away)}-${b.start}`,league:b.league,date:b.start,home:b.home,away:b.away,round:b.round||"Programme TV",source:b.source,status:"À venir",timeConfirmed:true,tvOnly:true,broadcasts:[]};
   match.broadcasts=broadcastsFor(match,tv.broadcasts);group.matches.push(match);
  }
+ // LNB TV : plateforme gratuite de la LNB, diffuse les matchs français non repris par une chaîne.
+ for(const group of results.filter(r=>r.league==="Betclic Élite"||r.league==="Élite 2"))for(const m of group.matches){
+  if((m.broadcasts||[]).some((b:any)=>b.live))continue;
+  m.broadcasts.push({league:m.league,home:m.home,away:m.away,start:m.date,channel:"LNB TV",live:true,replay:false,source:"https://www.lnb.tv/",sourceName:"LNB TV · plateforme officielle LNB",checkedAt});
+ }
  for(const group of results)for(const m of group.matches){m.foreignBroadcasts=chooseForeign(m,[...(m.foreignCandidates||[]),...europe.broadcasts]);delete m.foreignCandidates;}
  results.forEach(r=>r.matches.sort((a:any,b:any)=>Date.parse(a.date)-Date.parse(b.date)));
  return NextResponse.json({date,updatedAt:new Date().toISOString(),results,tvState:tv.officialState,tvSources:{official:tv.officialState,secondary:tv.secondaryState},foreignSources:{europe:europe.state,northAmerica:"ESPN · selon les données du match"},tvCheckedAt:tv.checkedAt},{headers:{"Cache-Control":"private, max-age=120"}});
