@@ -1,6 +1,6 @@
 import {officialCalendar} from "../../../lib/official-calendars";
 import {espnForeign,chooseForeign,getEuropeanTV} from "../../../lib/foreign-tv";
-import {getTV,broadcastsFor,parisDate,teamKey} from "../../../lib/basket-tv";
+import {getTV,broadcastsFor,parisDate,teamKey,sameTeam} from "../../../lib/basket-tv";
 import { NextRequest, NextResponse } from "next/server";
 const paris=(d:string)=>new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Paris",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(d));
 async function json(url:string):Promise<any>{const r=await fetch(url,{headers:{"User-Agent":"Mozilla/5.0","Accept":"application/json"},signal:AbortSignal.timeout(12000)});if(!r.ok)throw new Error("Source indisponible");return r.json();}
@@ -32,14 +32,14 @@ export async function GET(req:NextRequest){
  for(const group of results)for(const m of group.matches)m.broadcasts=broadcastsFor(m,tv.broadcasts);
  // Fusion tolérante : rattacher une diffusion non reconnue au match officiel correspondant
  // au lieu de créer une entrée dupliquée "Programme TV" (doublons du type 1er novembre).
- const shareTeam=(m:any,b:any)=>{const ks=[teamKey(m.home),teamKey(m.away)].filter(k=>k&&k!=="equipe a determiner");return ks.some(k=>k===teamKey(b.home)||k===teamKey(b.away));};
+ const shareTeam=(m:any,b:any)=>[m.home,m.away].some(x=>sameTeam(x,b.home)||sameTeam(x,b.away));
  for(const b of tv.broadcasts.filter((x:any)=>x.live&&parisDate(x.start)===date)){
   const group=results.find(r=>r.league===b.league);if(!group)continue;
   if(group.matches.some((m:any)=>broadcastsFor(m,[b]).length))continue;
   const near=group.matches.filter((m:any)=>!m.tvOnly&&parisDate(m.date)===parisDate(b.start)&&Math.abs(Date.parse(m.date)-Date.parse(b.start))<=4*3600000);
   const fallback=near.filter((m:any)=>!(m.broadcasts||[]).length);
   const target=near.find((m:any)=>shareTeam(m,b))||(fallback.length===1?fallback[0]:undefined);
-  if(target){if(!(target.broadcasts=target.broadcasts||[]).some((x:any)=>x.channel===b.channel&&x.start===b.start))target.broadcasts.push(b);continue;}
+  if(target){const aligned=target.timeConfirmed&&Math.abs(Date.parse(b.start)-Date.parse(target.date))>15*60000?{...b,start:target.date}:b;if(!(target.broadcasts=target.broadcasts||[]).some((x:any)=>x.channel===aligned.channel&&x.start===aligned.start))target.broadcasts.push(aligned);continue;}
   const match:any={id:`tv-${b.league}-${teamKey(b.home)}-${teamKey(b.away)}-${b.start}`,league:b.league,date:b.start,home:b.home,away:b.away,round:b.round||"Programme TV",source:b.source,status:"À venir",timeConfirmed:true,tvOnly:true,broadcasts:[]};
   match.broadcasts=broadcastsFor(match,tv.broadcasts);group.matches.push(match);
  }
