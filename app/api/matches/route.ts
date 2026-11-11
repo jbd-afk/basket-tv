@@ -2,6 +2,8 @@ import {officialCalendar} from "../../../lib/official-calendars";
 import {espnForeign,chooseForeign,getEuropeanTV} from "../../../lib/foreign-tv";
 import {getTV,broadcastsFor,parisDate,teamKey,sameTeam} from "../../../lib/basket-tv";
 import {franceMatches} from "../../../lib/france";
+import {euroleagueWomen} from "../../../lib/euroleague-women";
+import {wonderligueMatches} from "../../../lib/wonderligue";
 import { NextRequest, NextResponse } from "next/server";
 const paris=(d:string)=>new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Paris",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(d));
 async function json(url:string):Promise<any>{const r=await fetch(url,{headers:{"User-Agent":"Mozilla/5.0","Accept":"application/json"},signal:AbortSignal.timeout(12000)});if(!r.ok)throw new Error("Source indisponible");return r.json();}
@@ -28,8 +30,10 @@ export async function GET(req:NextRequest){
    return {league,state:"ok",matches};
   }catch{return {league,state:"unavailable",matches:[]};}
  });
- const [base,tv,europe,wnba,lnb,elite2]=await Promise.all([Promise.all(jobs),getTV(date),getEuropeanTV(date),officialCalendar("WNBA",date),officialCalendar("Betclic Élite",date),officialCalendar("Élite 2",date)]);
+ const [base,tv,europe,wnba,lnb,elite2,ew,lfb]=await Promise.all([Promise.all(jobs),getTV(date),getEuropeanTV(date),officialCalendar("WNBA",date),officialCalendar("Betclic Élite",date),officialCalendar("Élite 2",date),euroleagueWomen(date),wonderligueMatches(date)]);
  const results:any[]=[lnb,elite2,...base.filter(r=>r.league==="EuroLeague"),...base.filter(r=>r.league==="NBA"),wnba];
+ if(ew.state==="ok"&&ew.matches.length)results.push(ew);
+ if(lfb.state==="ok"&&lfb.matches.length)results.push(lfb);
  // Équipe de France : source en test (construite plus bas, après les fusions TV).
  const france=franceMatches(date);
  for(const group of results)for(const m of group.matches)m.broadcasts=broadcastsFor(m,tv.broadcasts);
