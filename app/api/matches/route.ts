@@ -30,9 +30,8 @@ export async function GET(req:NextRequest){
  });
  const [base,tv,europe,wnba,lnb,elite2]=await Promise.all([Promise.all(jobs),getTV(date),getEuropeanTV(date),officialCalendar("WNBA",date),officialCalendar("Betclic Élite",date),officialCalendar("Élite 2",date)]);
  const results:any[]=[lnb,elite2,...base.filter(r=>r.league==="EuroLeague"),...base.filter(r=>r.league==="NBA"),wnba];
- // Équipe de France : section affichée uniquement les jours de match (source en test).
+ // Équipe de France : source en test (construite plus bas, après les fusions TV).
  const france=franceMatches(date);
- if(france.today.length)results.push({league:"Équipe de France",state:"ok",matches:france.today.map((m:any)=>({id:m.id,league:"Équipe de France",date:m.date,home:m.home,away:m.away,round:m.round+" · Équipe "+m.side,source:m.source,status:m.status,timeConfirmed:m.timeConfirmed,broadcasts:m.broadcast?[{league:"Équipe de France",home:m.home,away:m.away,start:m.date,channel:m.broadcast.channel,live:m.broadcast.live,replay:false,source:m.broadcast.source,sourceName:m.broadcast.sourceName,checkedAt:m.checkedAt}]:[]}))});
  for(const group of results)for(const m of group.matches)m.broadcasts=broadcastsFor(m,tv.broadcasts);
  // Fusion tolérante : rattacher une diffusion non reconnue au match officiel correspondant
  // au lieu de créer une entrée dupliquée "Programme TV" (doublons du type 1er novembre).
