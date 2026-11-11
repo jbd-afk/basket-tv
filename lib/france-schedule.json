@@ -16,7 +16,8 @@
       "home": "Luxembourg",
       "away": "France",
       "round": "Éliminatoires EuroBasket 2027",
-      "timeConfirmed": true
+      "timeConfirmed": true,
+      "broadcast": { "channel": "La Chaîne L'Équipe", "live": true, "source": "https://www.basketeurope.com/eliminatoires-eurobasket-les-bleues-diffusees-en-clair-sur-lequipe/", "sourceName": "L'Équipe · en clair (source Basketeurope)" }
     },
     {
       "side": "Féminine",
@@ -24,7 +25,8 @@
       "home": "France",
       "away": "Ukraine",
       "round": "Éliminatoires EuroBasket 2027",
-      "timeConfirmed": false
+      "timeConfirmed": false,
+      "broadcast": { "channel": "La Chaîne L'Équipe", "live": true, "source": "https://www.basketeurope.com/eliminatoires-eurobasket-les-bleues-diffusees-en-clair-sur-lequipe/", "sourceName": "L'Équipe · en clair (source Basketeurope)" }
     },
     {
       "side": "Masculine",
