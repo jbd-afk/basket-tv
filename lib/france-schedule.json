@@ -1,0 +1,47 @@
+{
+  "matches": [
+    {
+      "side": "Féminine",
+      "date": "2026-11-11T16:30:00Z",
+      "home": "France",
+      "away": "Grande-Bretagne",
+      "round": "Éliminatoires EuroBasket 2027",
+      "venue": "Vendéspace, Mouilleron-le-Captif",
+      "timeConfirmed": true,
+      "broadcast": { "channel": "La Chaîne L'Équipe", "live": true, "source": "https://www.basketeurope.com/eliminatoires-eurobasket-les-bleues-diffusees-en-clair-sur-lequipe/", "sourceName": "L'Équipe · en clair (source Basketeurope)" }
+    },
+    {
+      "side": "Féminine",
+      "date": "2026-11-14T17:00:00Z",
+      "home": "Luxembourg",
+      "away": "France",
+      "round": "Éliminatoires EuroBasket 2027",
+      "timeConfirmed": true
+    },
+    {
+      "side": "Féminine",
+      "date": "2026-11-17T12:00:00Z",
+      "home": "France",
+      "away": "Ukraine",
+      "round": "Éliminatoires EuroBasket 2027",
+      "timeConfirmed": false
+    },
+    {
+      "side": "Masculine",
+      "date": "2026-11-27T12:00:00Z",
+      "home": "France",
+      "away": "Estonie",
+      "round": "Qualifications Coupe du Monde 2027",
+      "timeConfirmed": false
+    },
+    {
+      "side": "Masculine",
+      "date": "2026-11-30T19:30:00Z",
+      "home": "France",
+      "away": "Suède",
+      "round": "Qualifications Coupe du Monde 2027",
+      "venue": "Palais des Sports, Dijon",
+      "timeConfirmed": true
+    }
+  ]
+}
