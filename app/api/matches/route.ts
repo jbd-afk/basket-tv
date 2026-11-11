@@ -1,6 +1,7 @@
 import {officialCalendar} from "../../../lib/official-calendars";
 import {espnForeign,chooseForeign,getEuropeanTV} from "../../../lib/foreign-tv";
 import {getTV,broadcastsFor,parisDate,teamKey,sameTeam} from "../../../lib/basket-tv";
+import {franceMatches} from "../../../lib/france";
 import { NextRequest, NextResponse } from "next/server";
 const paris=(d:string)=>new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Paris",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(d));
 async function json(url:string):Promise<any>{const r=await fetch(url,{headers:{"User-Agent":"Mozilla/5.0","Accept":"application/json"},signal:AbortSignal.timeout(12000)});if(!r.ok)throw new Error("Source indisponible");return r.json();}
@@ -29,6 +30,9 @@ export async function GET(req:NextRequest){
  });
  const [base,tv,europe,wnba,lnb,elite2]=await Promise.all([Promise.all(jobs),getTV(date),getEuropeanTV(date),officialCalendar("WNBA",date),officialCalendar("Betclic Élite",date),officialCalendar("Élite 2",date)]);
  const results:any[]=[lnb,elite2,...base.filter(r=>r.league==="EuroLeague"),...base.filter(r=>r.league==="NBA"),wnba];
+ // Équipe de France : section affichée uniquement les jours de match (source en test).
+ const france=franceMatches(date);
+ if(france.today.length)results.push({league:"Équipe de France",state:"ok",matches:france.today.map((m:any)=>({id:m.id,league:"Équipe de France",date:m.date,home:m.home,away:m.away,round:m.round+" · Équipe "+m.side,source:m.source,status:m.status,timeConfirmed:m.timeConfirmed,broadcasts:m.broadcast?[{league:"Équipe de France",home:m.home,away:m.away,start:m.date,channel:m.broadcast.channel,live:m.broadcast.live,replay:false,source:m.broadcast.source,sourceName:m.broadcast.sourceName,checkedAt:m.checkedAt}]:[]}))});
  for(const group of results)for(const m of group.matches)m.broadcasts=broadcastsFor(m,tv.broadcasts);
  // Fusion tolérante : rattacher une diffusion non reconnue au match officiel correspondant
  // au lieu de créer une entrée dupliquée "Programme TV" (doublons du type 1er novembre).
@@ -50,5 +54,5 @@ export async function GET(req:NextRequest){
  }
  for(const group of results)for(const m of group.matches){m.foreignBroadcasts=chooseForeign(m,[...(m.foreignCandidates||[]),...europe.broadcasts]);delete m.foreignCandidates;}
  results.forEach(r=>r.matches.sort((a:any,b:any)=>Date.parse(a.date)-Date.parse(b.date)));
- return NextResponse.json({date,updatedAt:new Date().toISOString(),results,tvState:tv.officialState,tvSources:{official:tv.officialState,secondary:tv.secondaryState},foreignSources:{europe:europe.state,northAmerica:"ESPN · selon les données du match"},tvCheckedAt:tv.checkedAt},{headers:{"Cache-Control":"private, max-age=120"}});
+ return NextResponse.json({date,updatedAt:new Date().toISOString(),results,tvState:tv.officialState,tvSources:{official:tv.officialState,secondary:tv.secondaryState},foreignSources:{europe:europe.state,northAmerica:"ESPN · selon les données du match"},tvCheckedAt:tv.checkedAt,franceUpcoming:france.upcoming},{headers:{"Cache-Control":"private, max-age=120"}});
 }
