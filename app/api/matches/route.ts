@@ -52,6 +52,12 @@ export async function GET(req:NextRequest){
   if((m.broadcasts||[]).some((b:any)=>b.live))continue;
   m.broadcasts.push({league:m.league,home:m.home,away:m.away,start:m.date,channel:"LNB TV",live:true,replay:false,source:"https://www.lnb.tv/",sourceName:"LNB TV · plateforme officielle LNB",checkedAt});
  }
+ // Équipe de France : section affichée uniquement les jours de match (source en test).
+ // Construite après les fusions TV pour ne pas écraser les diffusions du fichier de données ;
+ // les diffusions détectées automatiquement (ex. Matchs TV) viennent s'ajouter.
+ if(france.today.length){const fg:any={league:"Équipe de France",state:"ok",matches:france.today.map((m:any)=>({id:m.id,league:"Équipe de France",date:m.date,home:m.home,away:m.away,round:m.round+" · Équipe "+m.side,source:m.source,status:m.status,timeConfirmed:m.timeConfirmed,broadcasts:m.broadcast?[{league:"Équipe de France",home:m.home,away:m.away,start:m.date,channel:m.broadcast.channel,live:m.broadcast.live,replay:false,source:m.broadcast.source,sourceName:m.broadcast.sourceName,checkedAt:m.checkedAt}]:[]}))};
+  for(const m of fg.matches)for(const b of broadcastsFor(m,tv.broadcasts))if(!m.broadcasts.some((x:any)=>x.channel===b.channel))m.broadcasts.push(b);
+  results.push(fg);}
  for(const group of results)for(const m of group.matches){m.foreignBroadcasts=chooseForeign(m,[...(m.foreignCandidates||[]),...europe.broadcasts]);delete m.foreignCandidates;}
  results.forEach(r=>r.matches.sort((a:any,b:any)=>Date.parse(a.date)-Date.parse(b.date)));
  return NextResponse.json({date,updatedAt:new Date().toISOString(),results,tvState:tv.officialState,tvSources:{official:tv.officialState,secondary:tv.secondaryState},foreignSources:{europe:europe.state,northAmerica:"ESPN · selon les données du match"},tvCheckedAt:tv.checkedAt,franceUpcoming:france.upcoming},{headers:{"Cache-Control":"private, max-age=120"}});
